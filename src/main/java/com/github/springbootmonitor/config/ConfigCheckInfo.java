@@ -20,7 +20,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "com.cmcc")
+@ConfigurationProperties(prefix = "com.github")
 public class ConfigCheckInfo {
 
     private Map<String, String> cdn;
