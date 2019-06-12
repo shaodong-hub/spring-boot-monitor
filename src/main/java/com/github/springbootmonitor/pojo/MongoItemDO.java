@@ -40,7 +40,7 @@ public class MongoItemDO {
     @Field("ip_source")
     private String ipSource;
 
-    @Field("ip_cdm")
+    @Field("ip_cdn")
     private String ipCdn;
 
     @Field("ip_waf")
@@ -50,13 +50,11 @@ public class MongoItemDO {
 
     private String desc;
 
-
     private Integer status;
 
     private String title;
 
     private Map<String, String> md5;
-
 
     @Indexed
     @Field("access_source")

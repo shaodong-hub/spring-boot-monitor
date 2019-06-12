@@ -23,15 +23,11 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @StepScope
-@Component(value = "ItemProcessor1Source")
-public class ItemProcessor1Source implements ItemProcessor<CsvItemDO, MongoItemDO> {
-
-    @Resource
-    private IHostSourceService service;
+@Component(value = "ItemProcessor2Cdn")
+public class ItemProcessor2Cdn implements ItemProcessor<MongoItemDO, MongoItemDO> {
 
     @Override
-    public MongoItemDO process(@NonNull CsvItemDO item) {
-        return service.getRemoteInfoBySource(item);
+    public MongoItemDO process(MongoItemDO item) throws Exception {
+        return null;
     }
-
 }

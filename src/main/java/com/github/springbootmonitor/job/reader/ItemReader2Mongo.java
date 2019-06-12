@@ -28,9 +28,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Slf4j
 @Component
-public class ItemReaderMongo {
+public class ItemReader2Mongo {
 
-    @Bean("ItemReaderMongo")
+    @Bean("ItemReader2Mongo")
     @StepScope
     public ItemReader<MongoItemDO> reader(@Value("#{jobParameters['collection']}") String collection, MongoTemplate mongoTemplate) {
         log.info("ItemReader Collection:" + collection);

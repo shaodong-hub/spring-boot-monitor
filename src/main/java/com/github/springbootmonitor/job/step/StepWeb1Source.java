@@ -8,7 +8,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,7 @@ import javax.annotation.Resource;
 @Component
 public class StepWeb1Source {
 
-    @Resource
+    @Resource(name = "ItemReader1GridFs")
     private ItemReader<CsvItemDO> reader;
 
     @Resource

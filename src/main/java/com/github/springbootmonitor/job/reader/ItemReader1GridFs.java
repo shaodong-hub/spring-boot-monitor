@@ -3,7 +3,6 @@ package com.github.springbootmonitor.job.reader;
 import com.github.springbootmonitor.pojo.CsvItemDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -28,21 +27,21 @@ import java.util.Arrays;
  */
 
 @Slf4j
-//@Component
-public class ItemReaderGridFs {
+@Component
+public class ItemReader1GridFs {
 
-    @Bean("ItemReaderGridFs")
+    @Bean("ItemReader1GridFs")
     @StepScope
     public ItemStreamReader<CsvItemDO> reader(@Value("#{jobParameters['collection']}") String collection, GridFsOperations operations) {
         FlatFileItemReader<CsvItemDO> itemReader = new FlatFileItemReader<>();
         itemReader.setResource(operations.getResource(collection));
         itemReader.setLinesToSkip(1);
-        DefaultLineMapper<CsvItemDO> lineMapper = getUserDODefaultLineMapper();
+        DefaultLineMapper<CsvItemDO> lineMapper = getDefaultLineMapper();
         itemReader.setLineMapper(lineMapper);
         return itemReader;
     }
 
-    private DefaultLineMapper<CsvItemDO> getUserDODefaultLineMapper() {
+    private DefaultLineMapper<CsvItemDO> getDefaultLineMapper() {
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
         String[] array = Arrays.stream(CsvItemDO.class.getDeclaredFields()).map(Field::getName).toArray(String[]::new);
         tokenizer.setNames(array);
@@ -50,11 +49,12 @@ public class ItemReaderGridFs {
         lineMapper.setLineTokenizer(tokenizer);
         lineMapper.setFieldSetMapper(fieldSet ->
                 CsvItemDO.builder()
-                        .host(fieldSet.readString(""))
-                        .ipSource(fieldSet.readString(""))
-                        .ipCdn(fieldSet.readString(""))
-                        .ipWaf(fieldSet.readString(""))
-                        .desc(fieldSet.readString(""))
+                        .host(fieldSet.readString("host"))
+                        .ipSource(fieldSet.readString("ipSource"))
+                        .ipCdn(fieldSet.readString("ipCdn"))
+                        .ipWaf(fieldSet.readString("ipWaf"))
+                        .http(fieldSet.readBoolean("http"))
+                        .desc(fieldSet.readString("desc"))
                         .build()
         );
         lineMapper.afterPropertiesSet();

@@ -42,8 +42,6 @@ public class HostDnsMappingDO {
 
     private Boolean http;
 
-    private String url;
-
     /**
      * 域名对应的 IP
      */
@@ -57,7 +55,6 @@ public class HostDnsMappingDO {
     public Boolean getHttp(){
         return null == http ? true : http;
     }
-
 
     @Override
     public String toString() {

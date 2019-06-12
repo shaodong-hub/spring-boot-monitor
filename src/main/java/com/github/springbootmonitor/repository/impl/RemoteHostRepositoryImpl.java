@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.Resource;
-import java.net.UnknownHostException;
 
 /**
  * <p>

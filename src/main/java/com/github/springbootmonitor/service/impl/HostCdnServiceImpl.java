@@ -1,13 +1,10 @@
 package com.github.springbootmonitor.service.impl;
 
-import com.github.springbootmonitor.common.InetAddressUtils;
-import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.HostDnsMappingDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
-import com.github.springbootmonitor.service.IHostSourceService;
-import org.apache.commons.lang3.StringUtils;
+import com.github.springbootmonitor.service.IHostCdnService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -16,7 +13,7 @@ import java.util.Map;
 
 /**
  * <p>
- * 创建时间为 15:24 2019-06-10
+ * 创建时间为 15:44 2019-06-11
  * 项目名称 spring-boot-monitor
  * </p>
  *
@@ -24,18 +21,19 @@ import java.util.Map;
  * @version 0.0.1
  * @since 0.0.1
  */
+
 @Service
-public class HostSourceServiceImpl implements IHostSourceService {
+public class HostCdnServiceImpl implements IHostCdnService {
 
     @Resource
     private IRemoteHostRepository repository;
 
     @Override
-    public MongoItemDO getRemoteInfoBySource(CsvItemDO itemDO) {
+    public MongoItemDO getRemoteInfoByCdn(MongoItemDO itemDO) {
         HostDnsMappingDO mappingDO = getHostDnsMappingDO(itemDO);
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
-            Map<String, String> md5map = Collections.singletonMap("source", remoteDO.getMd5());
+            Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
             return MongoItemDO.builder()
                     .host(remoteDO.getHost())
                     .ipSource(remoteDO.getProxy())
@@ -57,23 +55,15 @@ public class HostSourceServiceImpl implements IHostSourceService {
         }
     }
 
-    private static HostDnsMappingDO getHostDnsMappingDO(CsvItemDO itemDO) {
-        HostDnsMappingDO mappingDO = new HostDnsMappingDO();
-        String host = itemDO.getHost();
-        String ipSource = StringUtils.isNotBlank(itemDO.getIpSource()) ? itemDO.getIpSource() : InetAddressUtils.getIP(host);
-        mappingDO.setHost(host);
-        mappingDO.setIp(ipSource);
-        mappingDO.setProxy(Collections.singletonList(ipSource));
-        mappingDO.setHttp(itemDO.getHttp());
-        return mappingDO;
+    private HostDnsMappingDO getHostDnsMappingDO(MongoItemDO itemDO) {
+        return HostDnsMappingDO.builder()
+                .host(itemDO.getHost())
+                .ip(itemDO.getIpSource())
+                .http(itemDO.getHttp())
+                .proxy(Collections.singletonList(itemDO.getIpCdn()))
+                .build();
+
     }
-
-//    public MongoItemDO getRemoteInfoByCdn(CsvItemDO itemDO){
-//
-//    }
-//
-
-
 
 
 }
