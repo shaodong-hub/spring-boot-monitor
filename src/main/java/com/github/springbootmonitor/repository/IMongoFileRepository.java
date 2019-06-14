@@ -18,12 +18,35 @@ import java.util.Set;
 
 public interface IMongoFileRepository {
 
+    /**
+     * 获取所有的文件信息
+     *
+     * @return Set
+     */
     Set<FileInfoDO> getAllFileNames();
 
+    /**
+     * 保存文件
+     *
+     * @param name        文件名称
+     * @param inputStream 输入流
+     * @return String
+     */
     String saveFile(String name, InputStream inputStream);
 
+    /**
+     * 根据文件名称获取文件
+     *
+     * @param name 文件名
+     * @return InputStream
+     */
     InputStream getByName(String name);
 
+    /**
+     * 删除文件
+     *
+     * @param name 文件名称
+     */
     void delete(String name);
 
 }

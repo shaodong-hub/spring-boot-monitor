@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p>
  * 创建时间为 15:47 2019-06-10
@@ -25,16 +27,21 @@ import lombok.ToString;
 @AllArgsConstructor
 public class CsvItemDO {
 
+    @NotBlank
     private String host;
 
     private String ipSource;
 
+    @NotBlank
     private String ipCdn;
 
+    @NotBlank
     private String ipWaf;
 
+    @NotBlank
     private Boolean http;
 
+    @NotBlank
     private String desc;
 
 }

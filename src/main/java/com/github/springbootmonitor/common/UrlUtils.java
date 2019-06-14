@@ -40,6 +40,13 @@ public class UrlUtils {
     }
 
 
+    /**
+     * 根据主机获取对应的url
+     *
+     * @param host 主机
+     * @param http 是否为http
+     * @return String
+     */
     public static String joining(String host, boolean http) {
         String temp = hostNormalizer(host);
         return http ? PREFIX_HTTP + temp : PREFIX_HTTPS + temp;

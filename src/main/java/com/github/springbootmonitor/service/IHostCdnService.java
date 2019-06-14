@@ -1,6 +1,5 @@
 package com.github.springbootmonitor.service;
 
-import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 
 /**
@@ -16,6 +15,12 @@ import com.github.springbootmonitor.pojo.MongoItemDO;
 
 public interface IHostCdnService {
 
+    /**
+     * 通过CDN方式获取主机信息
+     *
+     * @param itemDO MongoItemDO
+     * @return MongoItemDO
+     */
     MongoItemDO getRemoteInfoByCdn(MongoItemDO itemDO);
 
 }

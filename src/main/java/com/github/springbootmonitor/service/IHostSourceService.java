@@ -2,7 +2,6 @@ package com.github.springbootmonitor.service;
 
 import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
-import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 
 /**
  * <p>
@@ -17,6 +16,12 @@ import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 
 public interface IHostSourceService {
 
+    /**
+     * 从源文件获取原始主机信息
+     *
+     * @param itemDO CsvItemDO
+     * @return MongoItemDO
+     */
     MongoItemDO getRemoteInfoBySource(CsvItemDO itemDO);
 
 }

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
+ *
+ * 文件不合法异常处理器
+ *
  * <p>
  * 创建时间为 00:18 2019-06-06
  * 项目名称 spring-boot-monitor

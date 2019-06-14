@@ -58,7 +58,9 @@ public class MongoFileServiceImpl implements IMongoFileService {
     public ResultDO<FileInfoDO> upload(MultipartFile file) {
         String name = file.getOriginalFilename();
         List<String> list = FilesUtils.readAllLines(file.getInputStream());
-
+        // TODO
+        //  某些字段必须有,并满足一个的格式,不满足给前端报 400 警告异常
+        //  重复文件名 400 错误
 
         repository.saveFile(name, file.getInputStream());
         return ResultDO.<FileInfoDO>builder()

@@ -13,6 +13,11 @@ package com.github.springbootmonitor.controller;
 
 public interface IMongoHtmlController {
 
+    /**
+     * 返回上传网页
+     *
+     * @return index
+     */
     String index();
 
 }

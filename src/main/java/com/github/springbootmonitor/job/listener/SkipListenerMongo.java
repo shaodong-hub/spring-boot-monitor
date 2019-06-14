@@ -24,7 +24,6 @@ public class SkipListenerMongo implements SkipListener<CsvItemDO, MongoItemDO> {
     @Override
     public void onSkipInRead(Throwable t) {
 
-
     }
 
     @Override
@@ -36,4 +35,5 @@ public class SkipListenerMongo implements SkipListener<CsvItemDO, MongoItemDO> {
     public void onSkipInProcess(CsvItemDO item, Throwable t) {
 
     }
+
 }

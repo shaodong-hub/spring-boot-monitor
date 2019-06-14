@@ -15,6 +15,12 @@ import com.github.springbootmonitor.pojo.ResultDO;
 
 public interface IMongoJobController {
 
+    /**
+     * 运行任务
+     *
+     * @param collection 集合的名称
+     * @return ResultDO
+     */
     ResultDO<String> runJob(String collection);
 
 }
