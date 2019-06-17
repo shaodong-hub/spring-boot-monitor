@@ -72,7 +72,7 @@ public class MongoFileRepositoryImpl implements IMongoFileRepository {
 
     @Override
     public boolean existByName(String name) {
-        return operations.findOne(new Query(Criteria.where("filename").is(name))) != null;
+        return operations.findOne(new Query(where("filename").is(name))) != null;
     }
 
 }

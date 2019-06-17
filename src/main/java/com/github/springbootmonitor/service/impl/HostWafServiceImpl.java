@@ -26,27 +26,12 @@ public class HostWafServiceImpl implements IHostWafService {
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
             Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
-            return MongoItemDO.builder()
-                    .host(remoteDO.getHost())
-                    .ipSource(remoteDO.getProxy())
-                    .title(remoteDO.getTitle())
-                    .ipCdn(itemDO.getIpCdn())
-                    .ipWaf(itemDO.getIpWaf())
-                    .md5(md5map)
-                    .http(itemDO.getHttp())
-                    .accessWaf(remoteDO.getAccess())
-                    .desc(remoteDO.getDesc())
-                    .build();
+            itemDO.setAccessWaf(remoteDO.getAccess());
+            itemDO.setMd5(md5map);
         } else {
-            return MongoItemDO.builder()
-                    .host(remoteDO.getHost())
-                    .ipSource(itemDO.getIpSource())
-                    .ipCdn(itemDO.getIpCdn())
-                    .ipWaf(itemDO.getIpWaf())
-                    .accessWaf(Boolean.FALSE)
-                    .desc(itemDO.getDesc())
-                    .build();
+            itemDO.setAccessWaf(Boolean.FALSE);
         }
+        return itemDO;
     }
 
     private HostDnsMappingDO getHostDnsMappingDO(MongoItemDO itemDO) {

@@ -1,13 +1,12 @@
 package com.github.springbootmonitor.service.impl;
 
 import com.github.springbootmonitor.advice.FileContentNotValidException;
-import com.github.springbootmonitor.advice.FileNotValidException;
 import com.github.springbootmonitor.common.FilesUtils;
 import com.github.springbootmonitor.pojo.FileInfoDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.github.springbootmonitor.service.IMongoFileService;
-import com.github.springbootmonitor.utils.ItemsValidation;
+import com.github.springbootmonitor.common.ItemsValidateUtils;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +69,7 @@ public class MongoFileServiceImpl implements IMongoFileService {
         List<String> list = FilesUtils.readAllLines(file.getInputStream());
         // 逐行校验格式
         for(String row :list){
-            if(!ItemsValidation.validate(row)){
+            if(!ItemsValidateUtils.validate(row)){
                 throw new FileContentNotValidException();
             }
         }

@@ -34,26 +34,12 @@ public class HostCdnServiceImpl implements IHostCdnService {
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
             Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
-            return MongoItemDO.builder()
-                    .host(remoteDO.getHost())
-                    .ipSource(remoteDO.getProxy())
-                    .title(remoteDO.getTitle())
-                    .ipCdn(itemDO.getIpCdn())
-                    .ipWaf(itemDO.getIpWaf())
-                    .md5(md5map)
-                    .http(itemDO.getHttp())
-                    .accessCdn(remoteDO.getAccess())
-                    .desc(remoteDO.getDesc())
-                    .build();
+            itemDO.setAccessCdn(remoteDO.getAccess());
+            itemDO.setMd5(md5map);
+            return itemDO;
         } else {
-            return MongoItemDO.builder()
-                    .host(remoteDO.getHost())
-                    .ipSource(itemDO.getIpSource())
-                    .ipCdn(itemDO.getIpCdn())
-                    .ipWaf(itemDO.getIpWaf())
-                    .accessCdn(Boolean.FALSE)
-                    .desc(itemDO.getDesc())
-                    .build();
+            itemDO.setAccessCdn(Boolean.FALSE);
+            return itemDO;
         }
     }
 
