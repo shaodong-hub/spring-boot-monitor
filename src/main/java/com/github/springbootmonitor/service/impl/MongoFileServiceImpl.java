@@ -1,10 +1,13 @@
 package com.github.springbootmonitor.service.impl;
 
+import com.github.springbootmonitor.advice.FileContentNotValidException;
+import com.github.springbootmonitor.advice.FileNotValidException;
 import com.github.springbootmonitor.common.FilesUtils;
 import com.github.springbootmonitor.pojo.FileInfoDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.github.springbootmonitor.service.IMongoFileService;
+import com.github.springbootmonitor.utils.ItemsValidation;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -53,15 +57,23 @@ public class MongoFileServiceImpl implements IMongoFileService {
                 .build();
     }
 
+
+
     @Override
     @SneakyThrows(IOException.class)
     public ResultDO<FileInfoDO> upload(MultipartFile file) {
         String name = file.getOriginalFilename();
-        List<String> list = FilesUtils.readAllLines(file.getInputStream());
-        // TODO
-        //  某些字段必须有,并满足一个的格式,不满足给前端报 400 警告异常
         //  重复文件名 400 错误
-
+        if(repository.existByName(name)){
+           throw new FileAlreadyExistsException("");
+        }
+        List<String> list = FilesUtils.readAllLines(file.getInputStream());
+        // 逐行校验格式
+        for(String row :list){
+            if(!ItemsValidation.validate(row)){
+                throw new FileContentNotValidException();
+            }
+        }
         repository.saveFile(name, file.getInputStream());
         return ResultDO.<FileInfoDO>builder()
                 .data(FileInfoDO.builder().name(name).lastModified(new Date()).build())

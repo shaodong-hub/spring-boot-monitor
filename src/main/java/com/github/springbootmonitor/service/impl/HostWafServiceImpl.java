@@ -4,7 +4,7 @@ import com.github.springbootmonitor.pojo.HostDnsMappingDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
-import com.github.springbootmonitor.service.IHostCdnService;
+import com.github.springbootmonitor.service.IHostWafService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,24 +12,16 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * <p>
- * 创建时间为 15:44 2019-06-11
- * 项目名称 spring-boot-monitor
- * </p>
- *
- * @author 石少东
- * @version 0.0.1
- * @since 0.0.1
+ * @Author: Du Jiahao
  */
-
 @Service
-public class HostCdnServiceImpl implements IHostCdnService {
+public class HostWafServiceImpl implements IHostWafService {
 
     @Resource
     private IRemoteHostRepository repository;
 
     @Override
-    public MongoItemDO getRemoteInfoByCdn(MongoItemDO itemDO) {
+    public MongoItemDO getRemoteInfoByWaf(MongoItemDO itemDO) {
         HostDnsMappingDO mappingDO = getHostDnsMappingDO(itemDO);
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
@@ -42,7 +34,7 @@ public class HostCdnServiceImpl implements IHostCdnService {
                     .ipWaf(itemDO.getIpWaf())
                     .md5(md5map)
                     .http(itemDO.getHttp())
-                    .accessCdn(remoteDO.getAccess())
+                    .accessWaf(remoteDO.getAccess())
                     .desc(remoteDO.getDesc())
                     .build();
         } else {
@@ -51,7 +43,7 @@ public class HostCdnServiceImpl implements IHostCdnService {
                     .ipSource(itemDO.getIpSource())
                     .ipCdn(itemDO.getIpCdn())
                     .ipWaf(itemDO.getIpWaf())
-                    .accessCdn(Boolean.FALSE)
+                    .accessWaf(Boolean.FALSE)
                     .desc(itemDO.getDesc())
                     .build();
         }
@@ -62,10 +54,8 @@ public class HostCdnServiceImpl implements IHostCdnService {
                 .host(itemDO.getHost())
                 .ip(itemDO.getIpSource())
                 .http(itemDO.getHttp())
-                .proxy(Collections.singletonList(itemDO.getIpCdn()))
+                .proxy(Collections.singletonList(itemDO.getIpWaf()))
                 .build();
 
     }
-
-
 }

@@ -49,4 +49,11 @@ public interface IMongoFileRepository {
      */
     void delete(String name);
 
+    /**
+     * 判断库中是否已经存在该文件名
+     * @param name  文件名称
+     * @return
+     */
+    boolean existByName(String name);
+    
 }

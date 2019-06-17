@@ -3,7 +3,9 @@ package com.github.springbootmonitor.repository.impl;
 import com.github.springbootmonitor.pojo.FileInfoDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.google.common.collect.Sets;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.SneakyThrows;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -66,6 +68,11 @@ public class MongoFileRepositoryImpl implements IMongoFileRepository {
     @Override
     public void delete(String name) {
         operations.delete(new Query(where("filename").is(name)));
+    }
+
+    @Override
+    public boolean existByName(String name) {
+        return operations.findOne(new Query(Criteria.where("filename").is(name))) != null;
     }
 
 }

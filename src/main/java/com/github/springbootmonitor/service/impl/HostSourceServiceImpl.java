@@ -39,6 +39,8 @@ public class HostSourceServiceImpl implements IHostSourceService {
             return MongoItemDO.builder()
                     .host(remoteDO.getHost())
                     .ipSource(remoteDO.getProxy())
+                    .ipCdn(itemDO.getIpCdn())
+                    .ipWaf(itemDO.getIpWaf())
                     .title(remoteDO.getTitle())
                     .md5(md5map)
                     .http(itemDO.getHttp())
