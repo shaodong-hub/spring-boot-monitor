@@ -25,7 +25,7 @@ public class ItemsValidateUtils {
      * 是否http请求的正则校验
      *  TRUE 或 FALSE
      */
-    private final static String HTTP_REGEX = "(true|false)";
+    private final static String HTTP_REGEX = "(TRUE|FALSE|true|false)";
 
     /**
      * 描述部分的正则校验(反向)
@@ -50,7 +50,7 @@ public class ItemsValidateUtils {
     }
 
     public static void main(String[] args) {
-        String str = "\"这里是说明：包含中文字符时，必须得选用支持中文的字符集（如UTF-8）\"";
-        System.out.println(str.matches(DESC_REGEX));
+        String str = "TRUE";
+        System.out.println(str.matches(HTTP_REGEX));
     }
 }
