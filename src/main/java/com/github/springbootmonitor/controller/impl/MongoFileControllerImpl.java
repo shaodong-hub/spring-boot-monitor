@@ -50,7 +50,7 @@ public class MongoFileControllerImpl implements IMongoFileController {
     }
 
     @Override
-    @GetMapping("/file/downliad/result/{name}")
+    @GetMapping("/file/download/result/{name}")
     public void downloadResults(@PathVariable String name, HttpServletResponse response) {
         service.downloadResults(name, response);
     }
