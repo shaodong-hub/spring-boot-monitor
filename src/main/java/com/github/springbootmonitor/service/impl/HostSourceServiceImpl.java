@@ -7,6 +7,7 @@ import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
 import com.github.springbootmonitor.service.IHostSourceService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import java.util.Map;
  * @version 0.0.1
  * @since 0.0.1
  */
+@Slf4j
 @Service
 public class HostSourceServiceImpl implements IHostSourceService {
 

@@ -5,6 +5,7 @@ import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
 import com.github.springbootmonitor.service.IHostWafService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,6 +15,7 @@ import java.util.Map;
 /**
  * @Author: Du Jiahao
  */
+@Slf4j
 @Service
 public class HostWafServiceImpl implements IHostWafService {
 
@@ -25,9 +27,9 @@ public class HostWafServiceImpl implements IHostWafService {
         HostDnsMappingDO mappingDO = getHostDnsMappingDO(itemDO);
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
-            Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
+            Map<String, String> md5map = Collections.singletonMap("waf", remoteDO.getMd5());
             itemDO.setAccessWaf(remoteDO.getAccess());
-            itemDO.setMd5(md5map);
+            itemDO.getMd5().putAll(md5map);
         } else {
             itemDO.setAccessWaf(Boolean.FALSE);
         }

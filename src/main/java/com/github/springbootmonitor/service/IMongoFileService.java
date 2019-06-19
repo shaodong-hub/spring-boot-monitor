@@ -46,6 +46,14 @@ public interface IMongoFileService {
     ResultDO<Void> download(String name, HttpServletResponse response);
 
     /**
+     * 下载处理后的文件
+     * @param name  原文件名称
+     * @param response  返回流
+     * @return Void
+     */
+    ResultDO<Void> downloadResults(String name, HttpServletResponse response);
+
+    /**
      * 删除文件
      *
      * @param name 文件名

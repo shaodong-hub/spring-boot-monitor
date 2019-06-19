@@ -50,6 +50,12 @@ public class MongoFileControllerImpl implements IMongoFileController {
     }
 
     @Override
+    @GetMapping("/file/downliad/result/{name}")
+    public void downloadResults(@PathVariable String name, HttpServletResponse response) {
+        service.downloadResults(name, response);
+    }
+
+    @Override
     @DeleteMapping("/file/{name}")
     public ResultDO<Void> delete(@PathVariable String name) {
         return service.delete(name);

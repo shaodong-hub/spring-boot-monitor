@@ -1,11 +1,11 @@
 package com.github.springbootmonitor.repository.impl;
 
 import com.github.springbootmonitor.pojo.FileInfoDO;
+import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.google.common.collect.Sets;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.SneakyThrows;
-import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -30,10 +31,13 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * @since 0.0.1
  */
 @Repository
-public class MongoFileRepositoryImpl implements IMongoFileRepository {
+public class MongoFileRepository implements IMongoFileRepository {
 
     @Resource
     private GridFsOperations operations;
+
+    @Resource
+    private MongoTemplate mongoTemplate;
 
     @Override
     @SneakyThrows(IOException.class)
@@ -63,6 +67,11 @@ public class MongoFileRepositoryImpl implements IMongoFileRepository {
     public InputStream getByName(String name) {
         GridFsResource resource = operations.getResource(name);
         return resource.getInputStream();
+    }
+
+    @Override
+    public List<MongoItemDO> getResultsByName(String name) {
+        return mongoTemplate.findAll(MongoItemDO.class, name);
     }
 
     @Override

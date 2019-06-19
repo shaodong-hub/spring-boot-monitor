@@ -31,6 +31,9 @@ public class ConfigJob {
     @Resource(name = "StepWeb3")
     private Step step3;
 
+    @Resource(name = "StepWeb4")
+    private Step step4;
+
     @Resource
     private JobBuilderFactory jobBuilderFactory;
 
@@ -40,6 +43,7 @@ public class ConfigJob {
                 .start(step1)
                 .next(step2)
                 .next(step3)
+                .next(step4)
                 .build();
     }
 
