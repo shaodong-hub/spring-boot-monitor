@@ -26,7 +26,7 @@ import javax.annotation.Resource;
  */
 
 @RestController
-@Api(value = "启动任务的接口")
+@Api(tags = "启动任务的接口")
 public class MongoJobControllerImpl implements IMongoJobController {
 
     @Resource

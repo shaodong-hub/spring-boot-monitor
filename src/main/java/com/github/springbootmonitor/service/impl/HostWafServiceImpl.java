@@ -4,7 +4,7 @@ import com.github.springbootmonitor.pojo.HostDnsMappingDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
-import com.github.springbootmonitor.service.IHostCdnService;
+import com.github.springbootmonitor.service.IHostWafService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -13,36 +13,27 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * <p>
- * 创建时间为 15:44 2019-06-11
- * 项目名称 spring-boot-monitor
- * </p>
- *
- * @author 石少东
- * @version 0.0.1
- * @since 0.0.1
+ * @Author: Du Jiahao
  */
-
 @Slf4j
 @Service
-public class HostCdnServiceImpl implements IHostCdnService {
+public class HostWafServiceImpl implements IHostWafService {
 
     @Resource
     private IRemoteHostRepository repository;
 
     @Override
-    public MongoItemDO getRemoteInfoByCdn(MongoItemDO itemDO) {
+    public MongoItemDO getRemoteInfoByWaf(MongoItemDO itemDO) {
         HostDnsMappingDO mappingDO = getHostDnsMappingDO(itemDO);
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
-            Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
-            itemDO.setAccessCdn(remoteDO.getAccess());
+            Map<String, String> md5map = Collections.singletonMap("waf", remoteDO.getMd5());
+            itemDO.setAccessWaf(remoteDO.getAccess());
             itemDO.getMd5().putAll(md5map);
-            return itemDO;
         } else {
-            itemDO.setAccessCdn(Boolean.FALSE);
-            return itemDO;
+            itemDO.setAccessWaf(Boolean.FALSE);
         }
+        return itemDO;
     }
 
     private HostDnsMappingDO getHostDnsMappingDO(MongoItemDO itemDO) {
@@ -50,10 +41,8 @@ public class HostCdnServiceImpl implements IHostCdnService {
                 .host(itemDO.getHost())
                 .ip(itemDO.getIpSource())
                 .http(itemDO.getHttp())
-                .proxy(Collections.singletonList(itemDO.getIpCdn()))
+                .proxy(Collections.singletonList(itemDO.getIpWaf()))
                 .build();
 
     }
-
-
 }

@@ -1,10 +1,15 @@
 package com.github.springbootmonitor.service.impl;
 
+import com.github.springbootmonitor.advice.FileContentNotValidException;
+import com.github.springbootmonitor.common.ExportCsvUtils;
 import com.github.springbootmonitor.common.FilesUtils;
+import com.github.springbootmonitor.common.ReflectUtils;
 import com.github.springbootmonitor.pojo.FileInfoDO;
+import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.github.springbootmonitor.service.IMongoFileService;
+import com.github.springbootmonitor.common.ItemsValidateUtils;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.FileAlreadyExistsException;
+import java.util.*;
 
 /**
  * <p>
@@ -53,15 +56,23 @@ public class MongoFileServiceImpl implements IMongoFileService {
                 .build();
     }
 
+
+
     @Override
     @SneakyThrows(IOException.class)
     public ResultDO<FileInfoDO> upload(MultipartFile file) {
         String name = file.getOriginalFilename();
+        // 重复文件名 400 错误
+        if(repository.existByName(name)){
+            throw new FileAlreadyExistsException("");
+        }
         List<String> list = FilesUtils.readAllLines(file.getInputStream());
-        // TODO
-        //  某些字段必须有,并满足一个的格式,不满足给前端报 400 警告异常
-        //  重复文件名 400 错误
-
+        // 逐行校验格式
+        for(String row :list){
+            if(!ItemsValidateUtils.validate(row)){
+                throw new FileContentNotValidException();
+            }
+        }
         repository.saveFile(name, file.getInputStream());
         return ResultDO.<FileInfoDO>builder()
                 .data(FileInfoDO.builder().name(name).lastModified(new Date()).build())
@@ -79,6 +90,29 @@ public class MongoFileServiceImpl implements IMongoFileService {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + name);
         IOUtils.copy(inputStream, outputStream);
         outputStream.flush();
+        return ResultDO.<Void>builder()
+                .message(ResultDO.StatusEnum.SUCCESS.toString())
+                .status(0)
+                .build();
+    }
+
+    @Override
+    public ResultDO<Void> downloadResults(String name, HttpServletResponse response) {
+
+        List<MongoItemDO> list = repository.getResultsByName(name);
+        String headLine = ExportCsvUtils.getHeadLine();
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        Map<String, Object> map;
+        for (MongoItemDO item : list) {
+            map = ReflectUtils.getKeyValueMap(item);
+            dataList.add(map);
+        }
+        try (final OutputStream os = response.getOutputStream()) {
+            ExportCsvUtils.responseSetProperties(name, response);
+            ExportCsvUtils.doExport(dataList, headLine, headLine, os);
+        } catch (Exception e) {
+            log.error("导出csv文件失败", e);
+        }
         return ResultDO.<Void>builder()
                 .message(ResultDO.StatusEnum.SUCCESS.toString())
                 .status(0)

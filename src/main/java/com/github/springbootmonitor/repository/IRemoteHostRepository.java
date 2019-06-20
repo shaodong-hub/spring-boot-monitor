@@ -24,5 +24,11 @@ public interface IRemoteHostRepository {
      */
     ResponseRemoteDO getRemoteHostByProxy(HostDnsMappingDO hostDnsMappingDO);
 
+    /**
+     * 模拟代理方式拦截远程攻击
+     * @param mappingDO 传入参数
+     * @return ResponseRemoteDO
+     */
+    ResponseRemoteDO getAttackResultByProxy(HostDnsMappingDO mappingDO);
 
 }

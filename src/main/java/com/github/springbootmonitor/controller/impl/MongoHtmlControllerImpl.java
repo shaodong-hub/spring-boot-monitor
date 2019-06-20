@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping
-@Api(value = "返回页面的接口")
+@Api(tags = "返回页面的接口")
 public class MongoHtmlControllerImpl implements IMongoHtmlController {
 
     @Override
