@@ -1,5 +1,6 @@
 package com.github.springbootmonitor.repository.impl;
 
+import com.github.springbootmonitor.common.AttackConsts;
 import com.github.springbootmonitor.common.BaseRestTemplate;
 import com.github.springbootmonitor.common.MD5Utils;
 import com.github.springbootmonitor.pojo.HostDnsMappingDO;
@@ -10,8 +11,11 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
@@ -63,6 +67,51 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                 .access(Boolean.TRUE)
                 .md5(MD5Utils.getMD5String(result))
                 .build();
+    }
+
+    @Override
+    @HystrixCommand(fallbackMethod = "getRemoteHostByProxyHystrix",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "30000"),
+                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100"),
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "100")
+            },
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "800"),
+                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "10"),
+                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "10000"),
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "48000")
+            }
+    )
+    public ResponseRemoteDO getAttackResultByProxy(HostDnsMappingDO mappingDO) {
+        log.info("正在访问远程注解:{}", mappingDO.toString());
+        try {
+            String result = new RestTemplate().getForObject(mappingDO.getUrl()+ AttackConsts.URL_ATTACK, String.class);
+            String md5 = MD5Utils.getMD5String(result);
+            String title = StringUtils.substringBetween(result, "<title>", "</title>");
+            log.info("获取远程 WEB MD5:{}---{}", mappingDO.getHost(), md5);
+            return ResponseRemoteDO.builder()
+                    .host(mappingDO.getHost())
+                    .ip(mappingDO.getIp())
+                    .proxy(mappingDO.getProxy().get(0))
+                    .http(mappingDO.getHttp())
+                    .title(title)
+                    // 是否被拦截
+                    .access(Boolean.FALSE)
+                    .md5(MD5Utils.getMD5String(result))
+                    .build();
+        }catch(RestClientResponseException ex){
+            log.info("{}",ex.getRawStatusCode());
+            return ResponseRemoteDO.builder()
+                    .host(mappingDO.getHost())
+                    .ip(mappingDO.getIp())
+                    .proxy(mappingDO.getProxy().get(0))
+                    .http(mappingDO.getHttp())
+                    .access(Boolean.TRUE)
+                    .build();
+        }
+
     }
 
     /**

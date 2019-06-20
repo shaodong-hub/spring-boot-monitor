@@ -1,8 +1,7 @@
 package com.github.springbootmonitor.job.processor;
 
-import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
-import com.github.springbootmonitor.service.IHostSourceService;
+import com.github.springbootmonitor.service.IHostCdnService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
@@ -26,8 +25,12 @@ import javax.annotation.Resource;
 @Component(value = "ItemProcessor2Cdn")
 public class ItemProcessor2Cdn implements ItemProcessor<MongoItemDO, MongoItemDO> {
 
+    @Resource
+    private IHostCdnService service;
+
     @Override
-    public MongoItemDO process(MongoItemDO item) throws Exception {
-        return null;
+    public MongoItemDO process(@NonNull MongoItemDO item){
+        return service.getRemoteInfoByCdn(item);
     }
+
 }

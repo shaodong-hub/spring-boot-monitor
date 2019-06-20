@@ -1,11 +1,14 @@
 package com.github.springbootmonitor.advice.handler;
 
+import com.github.springbootmonitor.advice.FileContentNotValidException;
 import com.github.springbootmonitor.advice.FileNotValidException;
 import com.github.springbootmonitor.pojo.ResultDO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.nio.file.FileAlreadyExistsException;
 
 /**
  *
@@ -25,8 +28,20 @@ public class FileNotValidExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = FileNotValidException.class)
-    public ResultDO<Void> handler(FileNotValidException exception) {
+    public ResultDO<Void> handler() {
         return ResultDO.<Void>builder().message("File Not Valid!").status(2).build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = FileAlreadyExistsException.class)
+    public ResultDO<Void> fileExistsHandler() {
+        return ResultDO.<Void>builder().message("File Already Exists!").status(2).build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = FileContentNotValidException.class)
+    public ResultDO<Void> contentHandler() {
+        return ResultDO.<Void>builder().message("Format of Content Not Valid!").status(2).build();
     }
 
 }

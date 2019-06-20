@@ -42,6 +42,13 @@ public interface IMongoFileController {
     void download(String name, HttpServletResponse response);
 
     /**
+     * 下载处理后的文件
+     * @param name  文件名称
+     * @param response 返回流
+     */
+    void downloadResults(String name, HttpServletResponse response);
+
+    /**
      * 删除文件
      *
      * @param name 文件名称
