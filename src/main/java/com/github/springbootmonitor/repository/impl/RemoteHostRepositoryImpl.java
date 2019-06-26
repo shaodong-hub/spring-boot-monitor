@@ -102,7 +102,6 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                     .proxy(mappingDO.getProxy().get(0))
                     .http(mappingDO.getHttp())
                     .title(title)
-                    // 是否被拦截
                     .access(Boolean.FALSE)
                     .md5(MD5Utils.getMD5String(result))
                     .build();
@@ -136,17 +135,7 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
     public WafResponse importHosts2Waf(XlsDO xlsDO){
         log.info("待添加至Waf平台的域名:{}", xlsDO.toString());
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Accept", MediaType.APPLICATION_JSON.toString());
-            List<String> cookies = new ArrayList<>();
-            cookies.add(properties.session);
-            cookies.add(properties.zgDid);
-            cookies.add(properties.zg);
-            headers.put(HttpHeaders.COOKIE,cookies);
-            headers.put("X_CSRF-TOKEN", Collections.singletonList(properties.csrfToken));
-            WafRequest request = new WafRequest(xlsDO);
-            HttpEntity<WafRequest> entity = new HttpEntity<>(request, headers);
+            HttpEntity<WafRequest> entity = new HttpEntity<>( new WafRequest(xlsDO), organizeHeaders());
             ResponseEntity<String> responseEntity =  new RestTemplate().postForEntity(properties.addPath, entity, String.class);
             WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
             log.info(response!=null?response.toString():"");
@@ -167,6 +156,24 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                     .build();
         }
     }
+
+    /**
+     * 设置请求头信息
+     * @return HttpHeader
+     */
+    private HttpHeaders organizeHeaders(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+        List<String> cookies = new ArrayList<>();
+        cookies.add(properties.session);
+        cookies.add(properties.zgDid);
+        cookies.add(properties.zg);
+        headers.put(HttpHeaders.COOKIE,cookies);
+        headers.put("X_CSRF-TOKEN", Collections.singletonList(properties.csrfToken));
+        return headers;
+    }
+
     /**
      * 超时或者错误 默认进入的方法
      *

@@ -5,6 +5,7 @@ import com.github.springbootmonitor.pojo.FileInfoDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import com.github.springbootmonitor.service.IWafService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,9 @@ public class MongoWafControllerImpl implements IMongoWafController {
 
     @Override
     @PostMapping("/file/upload")
+    @ApiOperation("上传文件接口")
     public ResultDO<FileInfoDO> upload(MultipartFile file) {
         return service.upload(file);
     }
-
 
 }

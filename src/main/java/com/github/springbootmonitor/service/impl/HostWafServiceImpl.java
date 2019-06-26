@@ -43,6 +43,5 @@ public class HostWafServiceImpl implements IHostWafService {
                 .http(itemDO.getHttp())
                 .proxy(Collections.singletonList(itemDO.getIpWaf()))
                 .build();
-
     }
 }

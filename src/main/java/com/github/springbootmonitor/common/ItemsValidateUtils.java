@@ -37,13 +37,16 @@ public class ItemsValidateUtils {
 
     private final static String[] REGEX = {HOST, IP_SOURCE_REGEX, IP_V4_REGEX, IP_V4_REGEX, HTTP_REGEX, DESC_REGEX};
 
-    private final static String[] msgs = {"域名格式有误","源站地址有误","cdn地址有误","waf地址有误","是否http请求填写有误","描述内容格式有误"};
+    private final static String[] msgs = {
+            ErrorMsgs.CONTENT_HOST_NOT_VALID, ErrorMsgs.CONTENT_SOURCE_IP_NOT_VALID, ErrorMsgs.CONTENT_CDN_IP_NOT_VALID,
+            ErrorMsgs.CONTENT_WAF_IP_NOT_VALID, ErrorMsgs.CONTENT_HTTP_NOT_VALID, ErrorMsgs.CONTENT_DESC_NOT_VALID
+    };
 
     public static boolean validate(String str){
 
         String[] splits = str.split(",");
         if(splits.length< REGEX.length){
-            throw new FileContentNotValidException("填写的内容有缺失");
+            throw new FileContentNotValidException(ErrorMsgs.CONTENT_LACK);
         }
         for(int i=0;i<REGEX.length;++i){
             if(!(splits[i].matches(REGEX[i]))){
@@ -51,10 +54,5 @@ public class ItemsValidateUtils {
             }
         }
         return true;
-    }
-
-    public static void main(String[] args) {
-        String str = "TRUE";
-        System.out.println(str.matches(HTTP_REGEX));
     }
 }

@@ -52,7 +52,6 @@ public class HostCdnServiceImpl implements IHostCdnService {
                 .http(itemDO.getHttp())
                 .proxy(Collections.singletonList(itemDO.getIpCdn()))
                 .build();
-
     }
 
 

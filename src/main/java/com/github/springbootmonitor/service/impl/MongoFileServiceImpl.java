@@ -1,15 +1,12 @@
 package com.github.springbootmonitor.service.impl;
 
 import com.github.springbootmonitor.advice.FileContentNotValidException;
-import com.github.springbootmonitor.common.ExportCsvUtils;
-import com.github.springbootmonitor.common.FilesUtils;
-import com.github.springbootmonitor.common.ReflectUtils;
+import com.github.springbootmonitor.common.*;
 import com.github.springbootmonitor.pojo.FileInfoDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import com.github.springbootmonitor.repository.IMongoFileRepository;
 import com.github.springbootmonitor.service.IMongoFileService;
-import com.github.springbootmonitor.common.ItemsValidateUtils;
 import com.google.common.collect.Sets;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +37,6 @@ import java.util.*;
 @Service
 public class MongoFileServiceImpl implements IMongoFileService {
 
-//    private static final String DATE_FORMAT = "yyyy-MM-dd_HH:mm:ss-";
-
     @Resource
     private IMongoFileRepository repository;
 
@@ -68,7 +63,7 @@ public class MongoFileServiceImpl implements IMongoFileService {
         // 逐行校验格式
         for(String row :list){
             if(!ItemsValidateUtils.validate(row)){
-                throw new FileContentNotValidException("文件格式有误");
+                throw new FileContentNotValidException(ErrorMsgs.CONTENT_NOT_VALID);
             }
         }
         repository.saveFile(name, file.getInputStream());
@@ -109,7 +104,7 @@ public class MongoFileServiceImpl implements IMongoFileService {
             ExportCsvUtils.responseSetProperties(name, response);
             ExportCsvUtils.doExport(dataList, headLine, headLine, os);
         } catch (Exception e) {
-            log.error("导出csv文件失败", e);
+            log.error(ErrorMsgs.IMPORT_CSV_FAILED, e);
         }
         return ResultDO.<Void>builder()
                 .message(ResultDO.StatusEnum.SUCCESS.toString())
