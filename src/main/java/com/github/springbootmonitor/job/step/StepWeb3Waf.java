@@ -32,7 +32,7 @@ public class StepWeb3Waf {
     @Resource(name = "ItemReader3Mongo")
     private ItemReader<MongoItemDO> reader;
 
-    @Resource
+    @Resource(name = "ItemWriterMongo")
     private ItemWriter<MongoItemDO> writer;
 
     @Resource(name = "ItemProcessor3Waf")

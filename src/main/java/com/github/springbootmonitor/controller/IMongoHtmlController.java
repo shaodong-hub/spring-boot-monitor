@@ -20,4 +20,10 @@ public interface IMongoHtmlController {
      */
     String index();
 
+    /**
+     * waf 文件上传网页
+     * @return String
+     */
+    String wafUpload();
+
 }

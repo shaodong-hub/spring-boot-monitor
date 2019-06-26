@@ -30,7 +30,7 @@ public class StepWeb4Attack {
     @Resource(name = "ItemReader4Mongo")
     private ItemReader<MongoItemDO> reader;
 
-    @Resource
+    @Resource(name = "ItemWriterMongo")
     private ItemWriter<MongoItemDO> writer;
 
     @Resource(name = "ItemProcessor4Attack")

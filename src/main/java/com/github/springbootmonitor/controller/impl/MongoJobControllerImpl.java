@@ -44,4 +44,16 @@ public class MongoJobControllerImpl implements IMongoJobController {
         return service.runJob(collection);
     }
 
+    @Override
+    @GetMapping("/waf/job/{collection}")
+    @ApiOperation(value = "添加Waf域名任务", httpMethod = "GET", notes = "添加Waf域名任务")
+    @ApiImplicitParam(name = "collection", value = "传入文件的名称", required = true, dataType = "String", paramType = "path")
+    @ApiResponses({
+            @ApiResponse(code = 403, message = "禁止访问"),
+            @ApiResponse(code = 404, message = "获取为空")
+    })
+    public ResultDO<String> runWafJob(@PathVariable("collection") String collection) {
+        return service.runWafJob(collection);
+    }
+
 }

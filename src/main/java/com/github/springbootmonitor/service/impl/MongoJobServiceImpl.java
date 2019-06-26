@@ -31,12 +31,21 @@ public class MongoJobServiceImpl implements IMongoJobService {
 
     @Override
     public ResultDO<String> runJob(String collection) {
-        run(collection);
+        run(collection, job);
         return ResultDO.<String>builder().status(0).message(ResultDO.StatusEnum.SUCCESS.toString()).build();
     }
 
-    @Resource
+    @Override
+    public ResultDO<String> runWafJob(String collection) {
+        run(collection, wafJob);
+        return ResultDO.<String>builder().status(0).message(ResultDO.StatusEnum.SUCCESS.toString()).build();
+    }
+
+    @Resource(name = "job")
     private Job job;
+
+    @Resource(name = "WafJob")
+    private Job wafJob;
 
     @Resource
     private JobLauncher launcher;
@@ -48,7 +57,7 @@ public class MongoJobServiceImpl implements IMongoJobService {
             JobExecutionAlreadyRunningException.class,
             JobInstanceAlreadyCompleteException.class
     })
-    public void run(String collection) {
+    public void run(String collection, Job job) {
         JobParameters jobParameters = new JobParametersBuilder().addString("collection", collection).toJobParameters();
         launcher.run(job, jobParameters);
     }

@@ -23,4 +23,11 @@ public interface IMongoJobController {
      */
     ResultDO<String> runJob(String collection);
 
+    /**
+     * 运行任务
+     * @param collection 文件名
+     * @return ResultDO
+     */
+    ResultDO<String> runWafJob(String collection);
+
 }

@@ -47,6 +47,8 @@ public class HostSourceServiceImpl implements IHostSourceService {
                     .md5(md5map)
                     .http(itemDO.getHttp())
                     .accessSource(remoteDO.getAccess())
+                    // 暂时先绕过cdn访问
+                    .accessCdn(Boolean.TRUE)
                     .desc(remoteDO.getDesc())
                     .build();
         } else {
@@ -55,6 +57,7 @@ public class HostSourceServiceImpl implements IHostSourceService {
                     .ipSource(itemDO.getIpSource())
                     .ipCdn(itemDO.getIpCdn())
                     .ipWaf(itemDO.getIpWaf())
+                    .http(itemDO.getHttp())
                     .accessSource(Boolean.FALSE)
                     .desc(itemDO.getDesc())
                     .build();

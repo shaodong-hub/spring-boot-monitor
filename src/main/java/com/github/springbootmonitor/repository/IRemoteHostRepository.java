@@ -2,6 +2,8 @@ package com.github.springbootmonitor.repository;
 
 import com.github.springbootmonitor.pojo.HostDnsMappingDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
+import com.github.springbootmonitor.pojo.WafResponse;
+import com.github.springbootmonitor.pojo.XlsDO;
 
 /**
  * <p>
@@ -31,4 +33,10 @@ public interface IRemoteHostRepository {
      */
     ResponseRemoteDO getAttackResultByProxy(HostDnsMappingDO mappingDO);
 
+    /**
+     * 往waf平台添加管理的域名
+     * @param xlsDO 文件名
+     * @return WafResponse
+     */
+    WafResponse importHosts2Waf(XlsDO xlsDO);
 }

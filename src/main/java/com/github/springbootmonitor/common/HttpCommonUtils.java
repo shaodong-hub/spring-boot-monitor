@@ -2,11 +2,14 @@ package com.github.springbootmonitor.common;
 
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -22,8 +25,23 @@ import java.util.List;
  * @version 0.0.1
  * @since 0.0.1
  */
-
+@Component
+@PropertySource(value = "classpath:restTemplate.properties")
 public class HttpCommonUtils {
+
+    private static String csrf;
+    private static String cookie;
+
+    @Value("${waf.X_CSRF_TOKEN}")
+    public void setCsrf(String val){
+        csrf = val;
+    }
+    @Value("${waf.cookie}")
+    public void setCookie(String val){
+        cookie = val;
+    }
+
+
 
     /**
      * 添加内容转换器
@@ -53,8 +71,8 @@ public class HttpCommonUtils {
         headers.add(new BasicHeader("Accept-Language", "zh-CN"));
         headers.add(new BasicHeader("Connection", "Keep-Alive"));
         headers.add(new BasicHeader("content-type", "application/json"));
-        headers.add(new BasicHeader("X-CSRF-TOKEN", "58bf7769-d695-4178-ab9d-5474e89fe3bf"));
-        headers.add(new BasicHeader("Cookie", "SESSION=ZDBiNjA3MDMtYjlkOC00NTllLWI5NTEtZjEwYjc1YzVkMTE5; zg_did=%7B%22did%22%3A%20%221664e73ad30a25-056f43142c3c84-333b5602-100200-1664e73ad311ce%22%7D; zg_08c5bcee6e9a4c0594a5d34b79b9622a=%7B%22sid%22%3A%201538914495801%2C%22updated%22%3A%201538914516024%2C%22info%22%3A%201538914495810%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D"));
+        headers.add(new BasicHeader("X-CSRF-TOKEN", csrf));
+        headers.add(new BasicHeader("Cookie", cookie));
         return headers;
     }
 

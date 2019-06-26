@@ -37,14 +37,16 @@ public class ConfigJob {
     @Resource
     private JobBuilderFactory jobBuilderFactory;
 
-    @Bean
+    @Bean(name = "job")
     public Job launcherJob() {
         return jobBuilderFactory.get("launcherJob")
                 .start(step1)
-                .next(step2)
+//                .next(step2)
                 .next(step3)
                 .next(step4)
                 .build();
     }
+
+
 
 }

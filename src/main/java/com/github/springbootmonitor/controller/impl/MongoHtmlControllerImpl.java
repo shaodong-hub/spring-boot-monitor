@@ -35,5 +35,12 @@ public class MongoHtmlControllerImpl implements IMongoHtmlController {
         return "index";
     }
 
+    @Override
+    @GetMapping("/waf/index")
+    @ApiOperation(value = "waf文件上传页面", httpMethod = "GET", notes = "上传waf文件页面")
+    public String wafUpload() {
+        return "waf-upload";
+    }
+
 
 }

@@ -1,23 +1,25 @@
 package com.github.springbootmonitor.repository.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.github.springbootmonitor.common.AttackConsts;
 import com.github.springbootmonitor.common.BaseRestTemplate;
 import com.github.springbootmonitor.common.MD5Utils;
-import com.github.springbootmonitor.pojo.HostDnsMappingDO;
-import com.github.springbootmonitor.pojo.ResponseRemoteDO;
+import com.github.springbootmonitor.pojo.*;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -36,6 +38,9 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
 
     @Resource
     private BaseRestTemplate baseRestTemplate;
+
+    @Resource
+    private RestTemplateProperties properties;
 
     @Override
     @HystrixCommand(fallbackMethod = "getRemoteHostByProxyHystrix",
@@ -87,9 +92,10 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
     public ResponseRemoteDO getAttackResultByProxy(HostDnsMappingDO mappingDO) {
         log.info("正在访问远程注解:{}", mappingDO.toString());
         try {
-            String result = new RestTemplate().getForObject(mappingDO.getUrl()+ AttackConsts.URL_ATTACK, String.class);
+            String result = baseRestTemplate.getRestTemplate(mappingDO).getForObject(mappingDO.getUrl()+AttackConsts.URL_ATTACK, String.class);
             String md5 = MD5Utils.getMD5String(result);
             String title = StringUtils.substringBetween(result, "<title>", "</title>");
+            System.out.println(result);
             log.info("获取远程 WEB MD5:{}---{}", mappingDO.getHost(), md5);
             return ResponseRemoteDO.builder()
                     .host(mappingDO.getHost())
@@ -111,9 +117,57 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                     .access(Boolean.TRUE)
                     .build();
         }
-
     }
 
+    @Override
+    @HystrixCommand(fallbackMethod = "getRemoteHostByProxyHystrix",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "30000"),
+                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100"),
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "100")
+            },
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "800"),
+                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "10"),
+                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "10000"),
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "48000")
+            }
+    )
+    public WafResponse importHosts2Waf(XlsDO xlsDO){
+        log.info("待添加至Waf平台的域名:{}", xlsDO.toString());
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+            List<String> cookies = new ArrayList<>();
+            cookies.add(properties.session);
+            cookies.add(properties.zgDid);
+            cookies.add(properties.zg);
+            headers.put(HttpHeaders.COOKIE,cookies);
+            headers.put("X_CSRF-TOKEN", Collections.singletonList(properties.csrfToken));
+            WafRequest request = new WafRequest(xlsDO);
+            HttpEntity<WafRequest> entity = new HttpEntity<>(request, headers);
+            ResponseEntity<String> responseEntity =  new RestTemplate().postForEntity(properties.addPath, entity, String.class);
+            WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
+            log.info(response!=null?response.toString():"");
+            return response;
+        }catch(RestClientResponseException ex){
+            log.info("{}",ex.getRawStatusCode());
+            return WafResponse
+                    .builder()
+                    .resultCode(400)
+                    .message("请求过程出错")
+                    .build();
+        }catch(Exception e){
+            log.info("error");
+            return WafResponse
+                    .builder()
+                    .resultCode(500)
+                    .message("添加过程中出错")
+                    .build();
+        }
+    }
     /**
      * 超时或者错误 默认进入的方法
      *

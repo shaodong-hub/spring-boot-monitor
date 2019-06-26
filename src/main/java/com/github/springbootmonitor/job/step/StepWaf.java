@@ -2,8 +2,8 @@ package com.github.springbootmonitor.job.step;
 
 import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.SkipListener;
+import com.github.springbootmonitor.pojo.WafItemDO;
+import com.github.springbootmonitor.pojo.XlsDO;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -15,38 +15,28 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
- * <p>
- * 创建时间为 15:07 2019-06-05
- * 项目名称 spring-boot-monitor
- * </p>
- *
- * @author 石少东
- * @version 0.0.1
- * @since 0.0.1
+ * @Author: Du Jiahao
+ * @Date: 2019/6/24 0024 10:45
  */
-@Slf4j
 @Component
-public class StepWeb1Source {
+public class StepWaf {
 
-    @Resource(name = "ItemReader1GridFs")
-    private ItemReader<CsvItemDO> reader;
+    @Resource(name = "WafReader")
+    private ItemReader<XlsDO> reader;
 
-    @Resource(name = "ItemWriterMongo")
-    private ItemWriter<MongoItemDO> writer;
+    @Resource(name = "WafProcessor")
+    private ItemProcessor<XlsDO, WafItemDO> processor;
 
-    @Resource(name = "ItemProcessor1Source")
-    private ItemProcessor<CsvItemDO, MongoItemDO> processor;
-
-    @Resource(name = "SkipListenerMongo")
-    private SkipListener<CsvItemDO, MongoItemDO> skipListener;
+    @Resource(name = "WafWriter")
+    private ItemWriter<WafItemDO> writer;
 
     @Resource
     private StepBuilderFactory stepBuilderFactory;
 
-    @Bean("StepWeb1")
+    @Bean(name = "WafStep")
     private Step launcherJobStep1() {
-        return stepBuilderFactory.get("launcherJobStep1")
-                .<CsvItemDO, MongoItemDO>chunk(5)
+        return stepBuilderFactory.get("WafStep")
+                .<XlsDO, WafItemDO>chunk(5)
                 .reader(reader)
                 .faultTolerant()
                 .skip(Exception.class)
@@ -59,9 +49,7 @@ public class StepWeb1Source {
                 .faultTolerant()
                 .skip(Exception.class)
                 .skipLimit(10)
-                .listener(skipListener)
                 .build();
     }
-
 
 }

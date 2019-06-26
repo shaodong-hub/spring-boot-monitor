@@ -25,7 +25,7 @@ public class ItemsValidateUtils {
      * 是否http请求的正则校验
      *  TRUE 或 FALSE
      */
-    private final static String HTTP_REGEX = "(TRUE|FALSE|true|false)";
+    private final static String HTTP_REGEX = "(true|false)";
 
     /**
      * 描述部分的正则校验(反向)

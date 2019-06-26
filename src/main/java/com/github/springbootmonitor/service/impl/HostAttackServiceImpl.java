@@ -1,12 +1,10 @@
 package com.github.springbootmonitor.service.impl;
 
-import com.github.springbootmonitor.common.AttackConsts;
 import com.github.springbootmonitor.pojo.HostDnsMappingDO;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResponseRemoteDO;
 import com.github.springbootmonitor.repository.IRemoteHostRepository;
 import com.github.springbootmonitor.service.IHostAttackService;
-import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
