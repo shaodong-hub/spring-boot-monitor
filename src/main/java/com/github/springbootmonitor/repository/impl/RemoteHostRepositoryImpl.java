@@ -95,7 +95,6 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
             String result = baseRestTemplate.getRestTemplate(mappingDO).getForObject(mappingDO.getUrl()+AttackConsts.URL_ATTACK, String.class);
             String md5 = MD5Utils.getMD5String(result);
             String title = StringUtils.substringBetween(result, "<title>", "</title>");
-            System.out.println(result);
             log.info("获取远程 WEB MD5:{}---{}", mappingDO.getHost(), md5);
             return ResponseRemoteDO.builder()
                     .host(mappingDO.getHost())

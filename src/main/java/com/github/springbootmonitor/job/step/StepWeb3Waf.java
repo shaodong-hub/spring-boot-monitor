@@ -44,7 +44,7 @@ public class StepWeb3Waf {
     @Resource
     private StepBuilderFactory stepBuilderFactory;
 
-    @Bean("StepWeb3")
+    @Bean(name = "StepWeb3")
     private Step launcherJobStep3() {
         return stepBuilderFactory.get("launcherJobStep3")
                 .<MongoItemDO, MongoItemDO>chunk(5)

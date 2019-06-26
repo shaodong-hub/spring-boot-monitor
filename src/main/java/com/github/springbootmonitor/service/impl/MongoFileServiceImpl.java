@@ -68,7 +68,7 @@ public class MongoFileServiceImpl implements IMongoFileService {
         // 逐行校验格式
         for(String row :list){
             if(!ItemsValidateUtils.validate(row)){
-                throw new FileContentNotValidException();
+                throw new FileContentNotValidException("文件格式有误");
             }
         }
         repository.saveFile(name, file.getInputStream());

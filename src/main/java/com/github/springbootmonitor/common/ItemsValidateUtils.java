@@ -1,5 +1,7 @@
 package com.github.springbootmonitor.common;
 
+import com.github.springbootmonitor.advice.FileContentNotValidException;
+
 /**
  * @Author: Du Jiahao
  * @Date: 2019/6/14 0014 19:06
@@ -35,15 +37,17 @@ public class ItemsValidateUtils {
 
     private final static String[] REGEX = {HOST, IP_SOURCE_REGEX, IP_V4_REGEX, IP_V4_REGEX, HTTP_REGEX, DESC_REGEX};
 
+    private final static String[] msgs = {"域名格式有误","源站地址有误","cdn地址有误","waf地址有误","是否http请求填写有误","描述内容格式有误"};
+
     public static boolean validate(String str){
 
         String[] splits = str.split(",");
         if(splits.length< REGEX.length){
-            return false;
+            throw new FileContentNotValidException("填写的内容有缺失");
         }
         for(int i=0;i<REGEX.length;++i){
             if(!(splits[i].matches(REGEX[i]))){
-                return false;
+                throw new FileContentNotValidException(msgs[i]);
             }
         }
         return true;

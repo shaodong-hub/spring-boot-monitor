@@ -42,7 +42,7 @@ public class StepWeb4Attack {
     @Resource
     private StepBuilderFactory stepBuilderFactory;
 
-    @Bean("StepWeb4")
+    @Bean(name = "StepWeb4")
     private Step launcherJobStep4() {
         return stepBuilderFactory.get("StepWeb4Attack")
                 .<MongoItemDO, MongoItemDO>chunk(5)

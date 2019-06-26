@@ -43,7 +43,7 @@ public class StepWeb1Source {
     @Resource
     private StepBuilderFactory stepBuilderFactory;
 
-    @Bean("StepWeb1")
+    @Bean(name = "StepWeb1")
     private Step launcherJobStep1() {
         return stepBuilderFactory.get("launcherJobStep1")
                 .<CsvItemDO, MongoItemDO>chunk(5)

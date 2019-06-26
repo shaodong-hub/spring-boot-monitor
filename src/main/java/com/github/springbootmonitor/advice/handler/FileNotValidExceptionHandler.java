@@ -40,8 +40,8 @@ public class FileNotValidExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = FileContentNotValidException.class)
-    public ResultDO<Void> contentHandler() {
-        return ResultDO.<Void>builder().message("Format of Content Not Valid!").status(2).build();
+    public ResultDO<Void> contentHandler(FileContentNotValidException e) {
+        return ResultDO.<Void>builder().message(e.getMessage()).status(2).build();
     }
 
 }
