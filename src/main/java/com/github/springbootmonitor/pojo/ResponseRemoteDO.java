@@ -45,6 +45,8 @@ public class ResponseRemoteDO {
 
     private String desc;
 
+    private String html;
+
     @Override
     public String toString() {
         return JSON.toJSONString(this);

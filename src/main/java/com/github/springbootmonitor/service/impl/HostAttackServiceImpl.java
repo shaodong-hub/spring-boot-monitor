@@ -30,7 +30,9 @@ public class HostAttackServiceImpl implements IHostAttackService {
             itemDO.setDefend(Boolean.TRUE);
         } else {
             Map<String, String> map = Collections.singletonMap("attack", remoteDO.getMd5());
+            Map<String, String> htmlmap = Collections.singletonMap("attack", remoteDO.getHtml());
             itemDO.getMd5().putAll(map);
+            itemDO.getHtml().putAll(htmlmap);
             itemDO.setDefend(Boolean.FALSE);
         }
         return itemDO;

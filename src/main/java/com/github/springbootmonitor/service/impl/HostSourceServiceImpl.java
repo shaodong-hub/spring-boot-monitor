@@ -38,6 +38,7 @@ public class HostSourceServiceImpl implements IHostSourceService {
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
             Map<String, String> md5map = Collections.singletonMap("source", remoteDO.getMd5());
+            Map<String, String> htmlmap = Collections.singletonMap("source", remoteDO.getHtml());
             return MongoItemDO.builder()
                     .host(remoteDO.getHost())
                     .ipSource(remoteDO.getProxy())
@@ -45,6 +46,7 @@ public class HostSourceServiceImpl implements IHostSourceService {
                     .ipWaf(itemDO.getIpWaf())
                     .title(remoteDO.getTitle())
                     .md5(md5map)
+                    .html(htmlmap)
                     .http(itemDO.getHttp())
                     .accessSource(remoteDO.getAccess())
 //                    // 暂时先绕过cdn访问

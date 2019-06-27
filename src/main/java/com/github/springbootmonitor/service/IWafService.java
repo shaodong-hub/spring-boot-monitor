@@ -1,9 +1,6 @@
 package com.github.springbootmonitor.service;
 
-import com.github.springbootmonitor.pojo.FileInfoDO;
-import com.github.springbootmonitor.pojo.ResultDO;
-import com.github.springbootmonitor.pojo.WafItemDO;
-import com.github.springbootmonitor.pojo.XlsDO;
+import com.github.springbootmonitor.pojo.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

@@ -28,8 +28,10 @@ public class HostWafServiceImpl implements IHostWafService {
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
             Map<String, String> md5map = Collections.singletonMap("waf", remoteDO.getMd5());
+            Map<String, String> htmlmap = Collections.singletonMap("waf", remoteDO.getHtml());
             itemDO.setAccessWaf(remoteDO.getAccess());
             itemDO.getMd5().putAll(md5map);
+            itemDO.getHtml().putAll(htmlmap);
         } else {
             itemDO.setAccessWaf(Boolean.FALSE);
         }

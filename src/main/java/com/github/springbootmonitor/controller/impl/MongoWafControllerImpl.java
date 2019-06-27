@@ -2,17 +2,20 @@ package com.github.springbootmonitor.controller.impl;
 
 import com.github.springbootmonitor.controller.IMongoWafController;
 import com.github.springbootmonitor.pojo.FileInfoDO;
+import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResultDO;
+import com.github.springbootmonitor.service.IMongoService;
 import com.github.springbootmonitor.service.IWafService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @Author: Du Jiahao
@@ -26,11 +29,25 @@ public class MongoWafControllerImpl implements IMongoWafController {
     @Resource
     private IWafService service;
 
+    @Resource
+    private IMongoService mongoService;
+
     @Override
     @PostMapping("/file/upload")
     @ApiOperation("上传文件接口")
     public ResultDO<FileInfoDO> upload(MultipartFile file) {
         return service.upload(file);
     }
+
+    @Override
+    @GetMapping("/webContent")
+    @ApiOperation("获取访问网站的源码接口")
+    public ResultDO<MongoItemDO> getWebsiteContents() {
+        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        String collection = session.getAttribute("collection").toString();
+        String host = session.getAttribute("host").toString();
+        return mongoService.getByHost(collection, host);
+    }
+
 
 }

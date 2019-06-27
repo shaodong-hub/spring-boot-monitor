@@ -71,6 +71,7 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                 .title(title)
                 .access(Boolean.TRUE)
                 .md5(MD5Utils.getMD5String(result))
+                .html(result)
                 .build();
     }
 
@@ -103,6 +104,7 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                     .http(mappingDO.getHttp())
                     .title(title)
                     .access(Boolean.FALSE)
+                    .html(result)
                     .md5(MD5Utils.getMD5String(result))
                     .build();
         }catch(RestClientResponseException ex){

@@ -56,6 +56,8 @@ public class MongoItemDO {
 
     private Map<String, String> md5;
 
+    private Map<String, String> html;
+
     @Indexed
     @Field("access_source")
     private Boolean accessSource;

@@ -26,4 +26,12 @@ public interface IMongoHtmlController {
      */
     String wafUpload();
 
+    /**
+     * 根据网站域名比较网站内容
+     * @param collection 集合
+     * @param webHost  网站域名
+     * @return  String
+     */
+    String websiteDiff(String collection, String webHost);
+
 }

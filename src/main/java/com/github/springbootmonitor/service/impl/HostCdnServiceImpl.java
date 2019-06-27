@@ -36,8 +36,10 @@ public class HostCdnServiceImpl implements IHostCdnService {
         ResponseRemoteDO remoteDO = repository.getRemoteHostByProxy(mappingDO);
         if (remoteDO.getAccess()) {
             Map<String, String> md5map = Collections.singletonMap("cdn", remoteDO.getMd5());
+            Map<String, String> htmlmap = Collections.singletonMap("cdn", remoteDO.getHtml());
             itemDO.setAccessCdn(remoteDO.getAccess());
             itemDO.getMd5().putAll(md5map);
+            itemDO.getHtml().putAll(htmlmap);
             return itemDO;
         } else {
             itemDO.setAccessCdn(Boolean.FALSE);

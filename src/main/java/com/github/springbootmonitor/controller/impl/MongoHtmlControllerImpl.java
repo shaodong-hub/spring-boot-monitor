@@ -7,7 +7,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * <p>
@@ -42,5 +48,13 @@ public class MongoHtmlControllerImpl implements IMongoHtmlController {
         return "waf-upload";
     }
 
-
+    @Override
+    @GetMapping("/diff/{collection}/{host}")
+    @ApiOperation("网站内容文本比对")
+    public String websiteDiff(@PathVariable("collection") String collection, @PathVariable("host")  String host) {
+        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        session.setAttribute("collection", collection);
+        session.setAttribute("host", host);
+        return "diff";
+    }
 }

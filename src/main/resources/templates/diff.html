@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" /><title>文档对比</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<meta name="description" content="Merge and Diff your documents with diff online and share" />
+	<meta name="keywords" content="diff,merge,compare,jsdiff,comparison,difference,file,text,unix,patch,algorithm,saas,longest common subsequence,diff online" />
+	<meta name="author" content="Jamie Peabody" />
+	<link rel="shortcut icon" href="/favicon.ico" />
+	<link rel="canonical" href="http://www.mergely.com" />
+    <link href="/js/mergely/css-family=Noto+Sans-400,700.css" tppabs="http://fonts.googleapis.com/css?family=Noto+Sans:400,700" rel='stylesheet' type='text/css' />
+    <script type="text/javascript" src="/js/mergely/jquery-1.8.2.js" ></script>
+
+	<link type="text/css" rel="stylesheet" href="/js/mergely/jquery-ui-1.10.1.custom.css" tppabs="http://www.mergely.com/style/mergely-theme/jquery-ui-1.10.1.custom.css" />
+    <link type='text/css' rel='stylesheet' href="/js/mergely/wicked-ui.css" tppabs="http://www.mergely.com/Mergely/editor/lib/wicked-ui.css" />
+	<script type="text/javascript" src="/js/mergely/wicked-ui.js" tppabs="http://www.mergely.com/Mergely/editor/lib/wicked-ui.js"></script>
+
+    <link type='text/css' rel='stylesheet' href="/js/mergely/tipsy.css" tppabs="http://www.mergely.com/Mergely/editor/lib/tipsy/tipsy.css" />
+	<script type="text/javascript" src="/js/mergely/jquery.tipsy.js" tppabs="http://www.mergely.com/Mergely/editor/lib/tipsy/jquery.tipsy.js"></script>
+	<script type="text/javascript" src="/js/mergely/farbtastic.js" tppabs="http://www.mergely.com/Mergely/editor/lib/farbtastic/farbtastic.js"></script>
+	<link type="text/css" rel="stylesheet" href="/js/mergely/farbtastic.css" tppabs="http://www.mergely.com/Mergely/editor/lib/farbtastic/farbtastic.css" />
+    <script type="text/javascript" src="/js/mergely/codemirror.min.js" tppabs="http://www.mergely.com/Mergely/lib/codemirror.min.js"></script>
+    <script type="text/javascript" src="/js/mergely/mergely.min.js" tppabs="http://www.mergely.com/Mergely/lib/mergely.min.js"></script>
+    <script type="text/javascript" src="/js/mergely/editor.min.js" tppabs="http://www.mergely.com/Mergely/editor/editor.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/js/mergely/codemirror.css" tppabs="http://www.mergely.com/Mergely/lib/codemirror.css" />
+	<link type="text/css" rel="stylesheet" href="/js/mergely/mergely.css" tppabs="http://www.mergely.com/Mergely/lib/mergely.css" />
+    <link type='text/css' rel='stylesheet' href="/js/mergely/editor.css" tppabs="http://www.mergely.com/Mergely/editor/editor.css" />
+	<script type="text/javascript" src="/js/mergely/searchcursor.js" tppabs="http://www.mergely.com/Mergely/lib/searchcursor.js"></script>
+
+	<script type="text/javascript">
+        var key = '';
+        var isSample = key == 'usaindep';
+    </script>
+</head>
+<body style="visibility:hidden">
+<div id="fb-root"></div><script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  // js.src = "all.js#xfbml=1"/*tpa=http://connect.facebook.net/en_US/all.js#xfbml=1*/;
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <!-- toolbar -->
+    <ul id="toolbar">
+        <li class="separator"></li>
+        <li id="tb-view-change-prev" data-icon="icon-arrow-up" title="Previous change">Previous change</li>
+        <li id="tb-view-change-next" data-icon="icon-arrow-down" title="Next change">Next change</li>
+        <li class="separator"></li>
+    </ul>
+    
+    <!-- dialog colors -->
+	<div id="dialog-colors" title="Mergely Color Settings" style="display:none">
+		<div id="picker" style="float: right;"></div>
+		<fieldset>
+			<legend>Changed</legend>
+			<label for="c-border">Border:</label><input type="text" id="c-border" name="c-border" class="colorwell" />
+			<br />
+			<label for="c-bg">Background:</label><input type="text" id="c-bg" name="c-bg" class="colorwell" />
+			<br />
+		</fieldset>
+		<fieldset>
+			<legend>Added</legend>
+			<label for="a-border">Border:</label><input type="text" id="a-border" name="a-border" class="colorwell" />
+			<br />
+			<label for="a-bg">Background:</label><input type="text" id="a-bg" name="a-bg" class="colorwell" />
+			<br />
+		</fieldset>
+		<fieldset>
+			<legend>Deleted</legend>
+			<label for="d-border">Border:</label><input type="text" id="d-border" name="d-border" class="colorwell" />
+			<br />
+			<label for="d-bg">Background:</label><input type="text" id="d-bg" name="d-bg" class="colorwell" />
+			<br />
+		</fieldset>
+	</div>
+
+    <!-- find -->
+    <div class="find">
+        <input type="text" />
+        <button class="find-prev"><span class="icon icon-arrow-up"></span></button>
+        <button class="find-next"><span class="icon icon-arrow-down"></span></button>
+        <button class="find-close"><span class="icon icon-x-mark"></span></button>
+    </div>
+    
+    <!-- editor -->
+    <div style="position: absolute;top: 73px;bottom: 10px;left: 5px;right: 5px;overflow-y: hidden;padding-bottom: 2px;">
+        <div id="mergely">
+        </div>
+    </div>
+<script>
+    // 请求数据
+    fetch("/waf/webContent").then((res) => res.json())//返回的是text方法
+    .then(data => {
+        let contents = data['data']['html'];
+        $('#mergely').mergely('lhs',contents['source']);
+        $('#mergely').mergely('rhs',contents['waf']);
+        // $('#mergely').mergely('update');
+    }).catch(err => console.log(err));
+
+
+</script>
+</body>
+</html>
