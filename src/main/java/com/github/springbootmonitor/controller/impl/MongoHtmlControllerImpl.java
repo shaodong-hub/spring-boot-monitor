@@ -1,5 +1,6 @@
 package com.github.springbootmonitor.controller.impl;
 
+import com.github.springbootmonitor.common.BaseController;
 import com.github.springbootmonitor.controller.IMongoHtmlController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,10 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -28,7 +25,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping
 @Api(tags = "返回页面的接口")
-public class MongoHtmlControllerImpl implements IMongoHtmlController {
+public class MongoHtmlControllerImpl extends BaseController implements IMongoHtmlController {
 
     @Override
     @GetMapping("index")
@@ -52,7 +49,7 @@ public class MongoHtmlControllerImpl implements IMongoHtmlController {
     @GetMapping("/diff/{collection}/{host}")
     @ApiOperation("网站内容文本比对")
     public String websiteDiff(@PathVariable("collection") String collection, @PathVariable("host")  String host) {
-        HttpSession session = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        HttpSession session = getSession();
         session.setAttribute("collection", collection);
         session.setAttribute("host", host);
         return "diff";
