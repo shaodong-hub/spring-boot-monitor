@@ -7,9 +7,9 @@ import com.github.springbootmonitor.service.IMongoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: Du Jiahao
@@ -34,13 +34,13 @@ public class MongoServiceImpl implements IMongoService {
     @Override
     public ResultDO<List<String>> getListContentNotConsistent(String collection) {
         List<MongoItemDO> list = repository.getAll(collection);
-        List<String> result = new ArrayList<>();
-        for(MongoItemDO item : list){
-            Map<String,String> map = item.getHtml();
-            if(map!=null && !(map.get("source").equals(map.get("waf")))){
-                result.add(item.getHost());
-            }
-        }
+        List<String> result = list.stream()
+                .filter(item -> {
+                    Map<String,String> map = item.getHtml();
+                    return map!=null && !(map.get("source").equals(map.get("waf")));
+                })
+                .map(MongoItemDO::getHost)
+                .collect(Collectors.toList());
         return ResultDO.<List<String>>builder()
                 .data(result)
                 .message(ResultDO.StatusEnum.SUCCESS.toString())
