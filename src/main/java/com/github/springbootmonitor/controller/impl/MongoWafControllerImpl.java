@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * @Author: Du Jiahao
@@ -45,6 +46,12 @@ public class MongoWafControllerImpl extends BaseController implements IMongoWafC
         String collection = session.getAttribute("collection").toString();
         String host = session.getAttribute("host").toString();
         return mongoService.getByHost(collection, host);
+    }
+
+    @Override
+    @GetMapping("/web-source/list/{collection}")
+    public ResultDO<List<String>> getListContentNotConsistent(@PathVariable("collection") String collection) {
+        return mongoService.getListContentNotConsistent(collection);
     }
 
 

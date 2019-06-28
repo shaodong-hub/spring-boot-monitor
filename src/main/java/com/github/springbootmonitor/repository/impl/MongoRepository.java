@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author: Du Jiahao
@@ -21,6 +22,11 @@ public class MongoRepository implements IMongoRepository {
     @Override
     public MongoItemDO getContentByHost(String host, String collection) {
         return template.findById(host, MongoItemDO.class, collection);
+    }
+
+    @Override
+    public List<MongoItemDO> getAll(String collection) {
+        return template.findAll(MongoItemDO.class, collection);
     }
 
 }

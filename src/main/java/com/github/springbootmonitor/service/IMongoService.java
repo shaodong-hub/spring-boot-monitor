@@ -3,6 +3,8 @@ package com.github.springbootmonitor.service;
 import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 
+import java.util.List;
+
 /**
  * @Author: Du Jiahao
  * @Date: 2019/6/27 0027 16:39
@@ -16,4 +18,11 @@ public interface IMongoService {
      * @return ResultDO<MongoItemDO>
      */
     ResultDO<MongoItemDO> getByHost(String collection, String host);
+
+    /**
+     * 找到源站md5和waf访问网站md5不同的所有域名列表
+     * @param collection
+     * @return
+     */
+    ResultDO<List<String>> getListContentNotConsistent(String collection);
 }

@@ -5,6 +5,8 @@ import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.ResultDO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @Author: Du Jiahao
  * @Date: 2019/6/24 0024 9:22
@@ -24,4 +26,10 @@ public interface IMongoWafController {
      */
     ResultDO<MongoItemDO> getWebsiteContents();
 
+    /**
+     *  返回网站源码和waf代理访问源码不一致的文档列表
+     * @Param String 集合/文档名
+     * @return List<MongoItemDO>
+     */
+    ResultDO<List<String>> getListContentNotConsistent(String collection);
 }

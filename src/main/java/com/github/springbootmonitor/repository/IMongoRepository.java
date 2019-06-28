@@ -2,6 +2,8 @@ package com.github.springbootmonitor.repository;
 
 import com.github.springbootmonitor.pojo.MongoItemDO;
 
+import java.util.List;
+
 
 /**
  * @Author: Du Jiahao
@@ -15,4 +17,12 @@ public interface IMongoRepository {
      * @return MongoItemDO
      */
     MongoItemDO getContentByHost(String host, String collection);
+
+    /**
+     * 获取集合内的所有记录
+     * @param collection 集合名称
+     * @return List<MongoItemDO>
+     */
+    List<MongoItemDO> getAll(String collection);
+
 }
