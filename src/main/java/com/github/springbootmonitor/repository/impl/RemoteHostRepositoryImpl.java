@@ -1,6 +1,8 @@
 package com.github.springbootmonitor.repository.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.springbootmonitor.common.AttackConsts;
 import com.github.springbootmonitor.common.BaseRestTemplate;
 import com.github.springbootmonitor.common.MD5Utils;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -120,24 +123,14 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "getRemoteHostByProxyHystrix",
-            commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "30000"),
-                    @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "100"),
-                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "100")
-            },
-            threadPoolProperties = {
-                    @HystrixProperty(name = "coreSize", value = "800"),
-                    @HystrixProperty(name = "keepAliveTimeMinutes", value = "10"),
-                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "10000"),
-                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),
-                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "48000")
-            }
-    )
     public WafResponse importHosts2Waf(XlsDO xlsDO){
         log.info("待添加至Waf平台的域名:{}", xlsDO.toString());
         try {
-            HttpEntity<WafRequest> entity = new HttpEntity<>( new WafRequest(xlsDO), organizeHeaders());
+            WafRequest param = new WafRequest(xlsDO);
+            param.setAccount(properties.defaultAccount);
+            param.setProperty(properties.defaultProperty);
+            param.setAreaFlag(properties.areaFlag);
+            HttpEntity<WafRequest> entity = new HttpEntity<>( param, organizeHeaders());
             ResponseEntity<String> responseEntity =  new RestTemplate().postForEntity(properties.addPath, entity, String.class);
             WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
             log.info(response!=null?response.toString():"");
@@ -159,6 +152,73 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
         }
     }
 
+    @Override
+    public WafResponse deleteHostFromWaf(XlsDO xlsDO) {
+        log.info("待从Waf平台删除的域名信息:{}", xlsDO.toString());
+        try {
+            RestTemplate template = new RestTemplate();
+            // 先根据查询接口获取到域名所对应的id信息
+            WafHostVO hostVO = getHostInfo(template, xlsDO.getHost(), properties.defaultOrgCode);
+            if(null == hostVO){
+                return WafResponse
+                        .builder()
+                        .resultCode(200)
+                        .message("域名不存在")
+                        .build();
+            }
+
+            HttpEntity<WafHostVO> entity = new HttpEntity<>( hostVO, organizeHeaders());
+            ResponseEntity<String> responseEntity =  template.postForEntity(properties.delPath, entity, String.class);
+            WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
+            log.info(response!=null ? response.toString() : "");
+            return response;
+        }catch(RestClientResponseException ex){
+            log.info("{}",ex.getRawStatusCode());
+            return WafResponse
+                    .builder()
+                    .resultCode(400)
+                    .message("请求过程出错")
+                    .build();
+        }catch(Exception e){
+            log.info("error");
+            return WafResponse
+                    .builder()
+                    .resultCode(500)
+                    .message("删除过程中出错")
+                    .build();
+        }
+    }
+
+    private WafHostVO getHostInfo(RestTemplate template, String host, String orgCode){
+        WafKeyWordVO vo = WafKeyWordVO.builder()
+                .domainKey(host)
+                .orgCode(orgCode)
+                .build();
+
+        HttpEntity<WafKeyWordVO> entity = new HttpEntity<>( vo, organizeHeaders());
+        ResponseEntity<String> responseEntity =  template.postForEntity(properties.queryPath, entity, String.class);
+        WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
+        if (response.getResultCode() != 0){
+            return null;
+        }
+        try{
+            JSONObject jsonObject = JSON.parseObject(response.getResult());
+            String domainList = jsonObject.get("domainList").toString();
+            if(domainList == null || domainList.length()==0){
+                return null;
+            }
+            List<WafHostVO> list = JSONArray.parseArray(domainList, WafHostVO.class);
+            if(list!=null && list.size()>0){
+                return list.stream().filter(item -> host.equals(item.getDomain())).collect(Collectors.toList()).get(0);
+            }
+            return null;
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return null;
+        }
+    }
+
     /**
      * 设置请求头信息
      * @return HttpHeader
@@ -172,7 +232,7 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
         cookies.add(properties.zgDid);
         cookies.add(properties.zg);
         headers.put(HttpHeaders.COOKIE,cookies);
-        headers.put("X_CSRF-TOKEN", Collections.singletonList(properties.csrfToken));
+        headers.put("X-CSRF-TOKEN", Collections.singletonList(properties.csrfToken));
         return headers;
     }
 

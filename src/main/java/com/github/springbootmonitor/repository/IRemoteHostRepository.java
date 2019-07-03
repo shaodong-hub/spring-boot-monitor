@@ -35,8 +35,15 @@ public interface IRemoteHostRepository {
 
     /**
      * 往waf平台添加管理的域名
-     * @param xlsDO 文件名
+     * @param xlsDO 域名信息
      * @return WafResponse
      */
     WafResponse importHosts2Waf(XlsDO xlsDO);
+
+    /**
+     * 从waf平台删除配置的域名
+     * @param xlsDO 域名信息
+     * @return WafResponse
+     */
+    WafResponse deleteHostFromWaf(XlsDO xlsDO);
 }

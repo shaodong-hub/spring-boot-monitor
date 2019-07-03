@@ -41,11 +41,20 @@ public class MongoJobServiceImpl implements IMongoJobService {
         return ResultDO.<String>builder().status(0).message(ResultDO.StatusEnum.SUCCESS.toString()).build();
     }
 
+    @Override
+    public ResultDO<String> runWafDelJob(String collection) {
+        run(collection, wafDelJob);
+        return ResultDO.<String>builder().status(0).message(ResultDO.StatusEnum.SUCCESS.toString()).build();
+    }
+
     @Resource(name = "job")
     private Job job;
 
-    @Resource(name = "WafJob")
+    @Resource(name = "addHostJob")
     private Job wafJob;
+
+    @Resource(name = "delHostJob")
+    private Job wafDelJob;
 
     @Resource
     private JobLauncher launcher;

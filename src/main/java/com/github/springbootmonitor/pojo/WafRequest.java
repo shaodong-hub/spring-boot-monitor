@@ -29,9 +29,6 @@ public class WafRequest {
     public WafRequest(){}
     public WafRequest(XlsDO xlsDO){
         this.setCheck(Boolean.FALSE);
-        this.setAccount("18867113067");
-        this.setProperty("A001B001C006");
-        this.setAreaFlag("A001B001C006");
         this.setDomain(xlsDO.getHost());
         this.setIsHttps(1);
         this.setHttpsForcedJump(0);

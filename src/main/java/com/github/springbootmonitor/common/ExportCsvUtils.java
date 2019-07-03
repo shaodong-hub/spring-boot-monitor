@@ -52,7 +52,9 @@ public class ExportCsvUtils {
             if (null != dataList) {
                 for (Map<String, Object> aDataList : dataList) {
                     for (String aMapKeyArr : mapKeyArr) {
-                        buf.append(aDataList.get(aMapKeyArr)).append(CSV_COLUMN_SEPARATOR);
+                        Object obj = aDataList.get(aMapKeyArr);
+                        buf.append(obj==null ? "" : obj.toString().replaceAll(",","，"))
+                                .append(CSV_COLUMN_SEPARATOR);
                     }
                     buf.append(CSV_RN);
                 }

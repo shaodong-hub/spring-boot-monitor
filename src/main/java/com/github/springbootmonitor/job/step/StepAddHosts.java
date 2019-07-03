@@ -1,7 +1,5 @@
 package com.github.springbootmonitor.job.step;
 
-import com.github.springbootmonitor.pojo.CsvItemDO;
-import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.WafItemDO;
 import com.github.springbootmonitor.pojo.XlsDO;
 import org.springframework.batch.core.Step;
@@ -19,23 +17,23 @@ import javax.annotation.Resource;
  * @Date: 2019/6/24 0024 10:45
  */
 @Component
-public class StepWaf {
+public class StepAddHosts {
 
-    @Resource(name = "WafReader")
+    @Resource(name = "HostReader")
     private ItemReader<XlsDO> reader;
 
     @Resource(name = "WafProcessor")
     private ItemProcessor<XlsDO, WafItemDO> processor;
 
-    @Resource(name = "WafWriter")
+    @Resource(name = "AddHostWriter")
     private ItemWriter<WafItemDO> writer;
 
     @Resource
     private StepBuilderFactory stepBuilderFactory;
 
-    @Bean(name = "WafStep")
-    private Step launcherJobStep1() {
-        return stepBuilderFactory.get("WafStep")
+    @Bean(name = "AddHostStep")
+    private Step addHostJobStep() {
+        return stepBuilderFactory.get("addHostJobStep")
                 .<XlsDO, WafItemDO>chunk(5)
                 .reader(reader)
                 .faultTolerant()

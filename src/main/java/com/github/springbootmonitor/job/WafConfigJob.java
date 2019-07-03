@@ -15,16 +15,26 @@ import javax.annotation.Resource;
 @Configuration
 public class WafConfigJob {
 
-    @Resource(name = "WafStep")
-    private Step wafStep;
+    @Resource(name = "AddHostStep")
+    private Step addHostStep;
+
+    @Resource(name = "DelHostStep")
+    private Step delHostStep;
 
     @Resource
     private JobBuilderFactory jobBuilderFactory;
 
-    @Bean(name = "WafJob")
-    public Job laucherWafJob(){
-        return jobBuilderFactory.get("launcherWafJob")
-                .start(wafStep)
+    @Bean(name = "addHostJob")
+    public Job addHostJob(){
+        return jobBuilderFactory.get("addHostJob")
+                .start(addHostStep)
+                .build();
+    }
+
+    @Bean(name = "delHostJob")
+    public Job delHostJob(){
+        return jobBuilderFactory.get("delHostJob")
+                .start(delHostStep)
                 .build();
     }
 }

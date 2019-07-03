@@ -1,7 +1,7 @@
 package com.github.springbootmonitor.job.reader;
 
-import com.github.springbootmonitor.pojo.CsvItemDO;
 import com.github.springbootmonitor.pojo.XlsDO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -19,11 +19,13 @@ import java.util.Arrays;
  * @Author: Du Jiahao
  * @Date: 2019/6/24 0024 10:54
  */
+@Slf4j
 @Component
-public class WafReader {
-    @Bean(name = "WafReader")
+public class HostReader {
+    @Bean(name = "HostReader")
     @StepScope
     public ItemStreamReader<XlsDO> reader(@Value("#{jobParameters['collection']}") String collection, GridFsOperations operations) {
+        log.info("reader");
         FlatFileItemReader<XlsDO> itemReader = new FlatFileItemReader<>();
         itemReader.setResource(operations.getResource(collection));
         // 跳过表头

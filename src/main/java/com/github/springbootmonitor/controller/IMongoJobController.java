@@ -17,7 +17,7 @@ public interface IMongoJobController {
 
     /**
      * 运行任务
-     *
+     * waf可访问性监测任务
      * @param collection 集合的名称
      * @return ResultDO
      */
@@ -25,9 +25,18 @@ public interface IMongoJobController {
 
     /**
      * 运行任务
+     * 向waf平台批量添加域名配置
      * @param collection 文件名
      * @return ResultDO
      */
     ResultDO<String> runWafJob(String collection);
+
+    /**
+     * 运行任务
+     * 从waf平台批量删除域名配置
+     * @param collection 文件名
+     * @return ResultDO
+     */
+    ResultDO<String> delHostJob(String collection);
 
 }

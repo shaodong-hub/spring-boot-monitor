@@ -47,10 +47,19 @@ public class WafServiceImpl implements IWafService {
     @Override
     public WafItemDO insert2Waf(XlsDO item) {
         WafResponse result = hostRepository.importHosts2Waf(item);
-
         return WafItemDO.builder()
                 .host(item.getHost())
                 .ip(item.getIp())
+                .status(result.getResultCode()==0)
+                .message(result.getMessage())
+                .build();
+    }
+
+    @Override
+    public WafItemDO deleteFromWaf(XlsDO item) {
+        WafResponse result = hostRepository.deleteHostFromWaf(item);
+        return WafItemDO.builder()
+                .host(item.getHost())
                 .status(result.getResultCode()==0)
                 .message(result.getMessage())
                 .build();

@@ -1,6 +1,5 @@
 package com.github.springbootmonitor.job.writer;
 
-import com.github.springbootmonitor.pojo.MongoItemDO;
 import com.github.springbootmonitor.pojo.WafItemDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -12,19 +11,19 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Author: Du Jiahao
- * @Date: 2019/6/24 0024 11:31
+ * @Date: 2019/7/3 0003 9:14
  */
 @Slf4j
 @Component
-public class WafWriter {
+public class DelHostWriter {
 
-    @Bean("WafWriter")
+    @Bean("DelHostWriter")
     @StepScope
-    public MongoItemWriter<WafItemDO> writer(@Value("#{jobParameters['collection']}") String collection, MongoTemplate mongoTemplate) {
-        System.out.println("WafWriter:" + collection);
+    public MongoItemWriter<WafItemDO> delHostWriter(@Value("#{jobParameters['collection']}") String collection, MongoTemplate mongoTemplate) {
+        System.out.println("DelHostWriter:" + collection);
         MongoItemWriter<WafItemDO> itemWriter = new MongoItemWriter<>();
         itemWriter.setTemplate(mongoTemplate);
-        itemWriter.setCollection("add_" + collection);
+        itemWriter.setCollection("del_"+collection);
         return itemWriter;
     }
 

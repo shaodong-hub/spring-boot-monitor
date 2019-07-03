@@ -24,4 +24,11 @@ public interface IWafService {
      */
     WafItemDO insert2Waf(XlsDO item);
 
+    /**
+     * 从waf平台中删除域名配置
+     * @param item 域名信息
+     * @return WafItemDO
+     */
+    WafItemDO deleteFromWaf(XlsDO item);
+
 }

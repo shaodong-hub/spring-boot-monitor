@@ -19,6 +19,18 @@ public class RestTemplateProperties {
     public String host;
     @Value("${waf.addPath}")
     public String addPath;
+    @Value("${waf.defaultAccount}")
+    public String defaultAccount;
+    @Value("${waf.defaultProperty}")
+    public String defaultProperty;
+    @Value("${waf.AreaFlag}")
+    public String areaFlag;
+    @Value("${waf.delPath}")
+    public String delPath;
+    @Value("${waf.queryPath}")
+    public String queryPath;
+    @Value("${waf.defaultOrgCode}")
+    public String defaultOrgCode;
     @Value("${waf.session}")
     public String session;
     @Value("${waf.zg_did}")
