@@ -77,12 +77,4 @@ public class HostSourceServiceImpl implements IHostSourceService {
         return mappingDO;
     }
 
-//    public MongoItemDO getRemoteInfoByCdn(CsvItemDO itemDO){
-//
-//    }
-//
-
-
-
-
 }

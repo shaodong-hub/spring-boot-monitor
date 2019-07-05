@@ -166,7 +166,6 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
                         .message("域名不存在")
                         .build();
             }
-
             HttpEntity<WafHostVO> entity = new HttpEntity<>( hostVO, organizeHeaders());
             ResponseEntity<String> responseEntity =  template.postForEntity(properties.delPath, entity, String.class);
             WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
@@ -190,15 +189,15 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
     }
 
     private WafHostVO getHostInfo(RestTemplate template, String host, String orgCode){
+
         WafKeyWordVO vo = WafKeyWordVO.builder()
                 .domainKey(host)
                 .orgCode(orgCode)
                 .build();
-
         HttpEntity<WafKeyWordVO> entity = new HttpEntity<>( vo, organizeHeaders());
         ResponseEntity<String> responseEntity =  template.postForEntity(properties.queryPath, entity, String.class);
         WafResponse response = JSONArray.parseObject(responseEntity.getBody(), WafResponse.class);
-        if (response.getResultCode() != 0){
+        if (response== null || response.getResultCode()!=0){
             return null;
         }
         try{
@@ -214,7 +213,7 @@ public class RemoteHostRepositoryImpl implements IRemoteHostRepository {
             return null;
         }
         catch(Exception e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
             return null;
         }
     }
